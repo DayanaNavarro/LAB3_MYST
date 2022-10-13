@@ -154,5 +154,24 @@ def f_estadisticas_ba(param_data):
     
     return df_1_tabla
 
+# Función para caluclar estadísticas básicas y ranking por instrumentos (todos los datos)
+def f_estadisticas_ba2(tabla):
 
-
+    ops_totales=len(tabla)
+    ops_ganadoras_totales=len(tabla[tabla["Beneficio"]>0])
+    ops_ganadoras_compra=len(tabla[(tabla["Beneficio"]>0)&(tabla["Tipo"]=="buy")])
+    ops_ganadoras_venta=len(tabla[(tabla["Beneficio"]>0)&(tabla["Tipo"]=="sell")])
+    ops_perdedoras_totales=len(tabla[tabla["Beneficio"]<0])
+    ops_perdedoras_compra=len(tabla[(tabla["Beneficio"]<0)&(tabla["Tipo"]=="buy")])
+    ops_perdedoras_venta=len(tabla[(tabla["Beneficio"]<0)&(tabla["Tipo"]=="sell")])
+    mediana=tabla["Beneficio"].median()
+    r_efectividad=ops_ganadoras_totales/ops_totales
+    r_proporcion=ops_perdedoras_totales/ops_totales
+    r_efectividad_c=ops_ganadoras_compra/ops_totales
+    r_efectividad_v=ops_ganadoras_venta/ops_totales
+    df_1_tabla=pd.DataFrame()
+    df_1_tabla["Media"]=["Ops totales","Ganadoras","Ganadoras_c","Ganadoras_v","Perdedoras","Perdedoras_c","Perdedoras_v","Mediana (profit)","Mediana(pips)","r_efectividad","r_proporcion","r_efectividad_c","r_efectividad_v"]
+    df_1_tabla["Valor"]=[ops_totales,ops_ganadoras_totales,ops_ganadoras_compra,ops_ganadoras_venta,ops_perdedoras_totales,ops_perdedoras_compra,ops_perdedoras_venta,mediana,0,r_efectividad,r_proporcion,r_efectividad_c,r_efectividad_v]
+    df_1_tabla["Descripcion"]=["Operaciones totales","Operaciones ganadoras","Operaciones ganadoras compra","Operaciones ganadoras venta","Operaciones Perdedoras","Operaciones Perdedoras compra","Operaciones Perdedoras venta","Mediana de profit de operaciones","Mediana de pips de operaciones","Ganadoras Totales/Operaciones Totales","Ganadoras Totales/Perdedoras Totales","Ganadoras Compras/Operaciones Totales","Ganadoras Ventas/ Operaciones Totales"]
+    
+    return df_1_tabla
