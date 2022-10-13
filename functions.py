@@ -11,7 +11,7 @@ def f_leer_archivo(param_archivo: str):
     return data
 
 # Función para detectar pips
-def f_pip_size1(param_ins: str):
+def f_pip_size1(param_ins: str, instruments_pips):
     
     for i in range(len(instruments_pips)):
         
@@ -37,57 +37,29 @@ def f_pip_size1(param_ins: str):
 def f_pip_size2(size):
 
     di = {"EURUSD":10000,"USDJPY":100,"GBPUSD":10000,"EURCAD":10000,"BITCOIN":100,"GBPJPY":100,"USDCAD":10000,
-
          "EURJPY":100,"CHFJPY":100,"NAT.GAS":100,"EURMXN":100,"AUDCAD":10000,"EURGBP":10000,"CADCHF":10000,"WTI":100,
-
          "RENA.PA":100,"BRENT":100,"GT.O":100,"MSFT.O":100}
 
     return  di[size]
-
 
 # Función para agregar columnas de transformaciones de pips
 
 def f_columnas_pips(param_data,f_pip_size):
 
-
-
-    pip_columns = pd.DataFrame()
-
-
-
-    pip_columns["pips"]=0
-
-
+    param_data["pips"]=0
 
     for i in range(len(param_data)):
 
-
-
         if param_data.loc[i,"Tipo"]=="buy":
-
-
-
-            pip_columns.loc[i,"pips"] = (float(param_data.loc[i,'Precio']) - float(param_data.loc[i,'Precio.1']))*f_pip_size(param_data.loc[i,"Símbolo"])
-
-
+            param_data.loc[i,"pips"] = (float(param_data.loc[i,'Precio']) - float(param_data.loc[i,'Precio.1']))*f_pip_size(param_data.loc[i,"Símbolo"])
 
         else:
+            param_data.loc[i,"pips"] = (float(param_data.loc[i,'Precio.1']) - float(param_data.loc[i,'Precio']))*f_pip_size(param_data.loc[i,"Símbolo"])
 
-
-
-            pip_columns.loc[i,"pips"] = (float(param_data.loc[i,'Precio.1']) - float(param_data.loc[i,'Precio']))*f_pip_size(param_data.loc[i,"Símbolo"])
-
-
-
-    pip_columns['pips_acm'] = pip_columns.pips.cumsum()
-
-
-
-    pip_columns['profit_acm'] = param_data.Beneficio.cumsum()
-
-   
-
-    return pip_columns
+    param_data['pips_acm'] = param_data.pips.cumsum()
+    param_data['profit_acm'] = param_data.Beneficio.cumsum()
+    
+    return param_data
 
 
 # Agregado de columnas de tiempo en segundos
@@ -131,7 +103,7 @@ def f_columnas_tiempos(param_data):
 
 # Función para caluclar estadísticas básicas y ranking por instrumentos (individual)
 
-def f_estadisticas_ba(param_data):
+def f_estadisticas_ba(param_data, f_columnas_pips, f_pip_size2):
     
     Ops_totales = param_data.Posición.nunique()
     Ganadoras = param_data[param_data.Beneficio > 0].Posición.nunique()
@@ -141,7 +113,7 @@ def f_estadisticas_ba(param_data):
     Perdedoras_c = param_data[(param_data.Beneficio <0) &(param_data.Tipo == "buy")].Posición.nunique()
     Perdedoras_v = param_data[(param_data.Beneficio <0) &(param_data.Tipo == "sell")].Posición.nunique()
     Mediana_profit = statistics.median(param_data['Beneficio'])
-    Mediana_pip = statistics.median(f_columnas_pips(param_data,f_pip_size)['pips'])
+    Mediana_pip = statistics.median(f_columnas_pips(param_data,f_pip_size2)['pips'])
     r_efectividad = Ganadoras/Ops_totales
     r_proporcion = Ganadoras/Perdedoras
     r_efectividad_c = Ganadoras_c/Ops_totales
