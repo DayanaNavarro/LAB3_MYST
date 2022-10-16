@@ -3,6 +3,7 @@
 import pandas as pd
 from datetime import datetime
 import statistics
+from datetime import date, timedelta
 
 # Función para leer archivos 
 def f_leer_archivo(param_archivo: str):
@@ -147,3 +148,29 @@ def f_estadisticas_ba2(tabla):
     df_1_tabla["Descripcion"]=["Operaciones totales","Operaciones ganadoras","Operaciones ganadoras compra","Operaciones ganadoras venta","Operaciones Perdedoras","Operaciones Perdedoras compra","Operaciones Perdedoras venta","Mediana de profit de operaciones","Mediana de pips de operaciones","Ganadoras Totales/Operaciones Totales","Ganadoras Totales/Perdedoras Totales","Ganadoras Compras/Operaciones Totales","Ganadoras Ventas/ Operaciones Totales"]
     
     return df_1_tabla
+
+# Función que agrega la evolución de capital diaria
+def f_evolucion_capital(param_data): 
+    capital = pd.DataFrame()
+
+    fecha_inicial= list(param_data['Fecha/Hora'].apply(lambda x: x.split(' ')[0])) #Fecha en que abrio
+    fecha_cierre= list(param_data['Fecha/Hora.1'].apply(lambda x: x.split(' ')[0])) #Fecha en que se cerro
+
+    fecha1 = pd.to_datetime(fecha_inicial, format='%Y.%m.%d')
+    fecha2 = pd.to_datetime(fecha_cierre, format='%Y.%m.%d')
+    
+    fecha_start = fecha1[0]
+    fecha_end = fecha1[-1]
+    
+    fechas = []
+    
+    # Agregado de fechas en las que no hubo transacciones
+    for i in range(int(str(fecha_end-fecha_start)[0])+1):
+        
+        fechas.append(fecha_start+timedelta(i))
+
+    capital["timestamp"]  = fechas
+    capital['profit_d'] = [param_data[fecha2 == j].Beneficio.sum() for j in fechas]
+    capital["profit_acm_d"] = capital.profit_d.cumsum() + 100000
+    
+    return capital
