@@ -104,7 +104,7 @@ def f_columnas_tiempos(param_data):
 
 # Función para caluclar estadísticas básicas y ranking por instrumentos (individual)
 
-def f_estadisticas_ba(param_data, f_columnas_pips, f_pip_size2):
+def f_estadisticas_ba(param_data):
     
     Ops_totales = param_data.Posición.nunique()
     Ganadoras = param_data[param_data.Beneficio > 0].Posición.nunique()
@@ -114,7 +114,7 @@ def f_estadisticas_ba(param_data, f_columnas_pips, f_pip_size2):
     Perdedoras_c = param_data[(param_data.Beneficio <0) &(param_data.Tipo == "buy")].Posición.nunique()
     Perdedoras_v = param_data[(param_data.Beneficio <0) &(param_data.Tipo == "sell")].Posición.nunique()
     Mediana_profit = statistics.median(param_data['Beneficio'])
-    Mediana_pip = statistics.median(f_columnas_pips(param_data,f_pip_size2)['pips'])
+    Mediana_pip = statistics.median(f_columnas_pips(param_data,f_pip_size)['pips'])
     r_efectividad = Ganadoras/Ops_totales
     r_proporcion = Ganadoras/Perdedoras
     r_efectividad_c = Ganadoras_c/Ops_totales
@@ -125,11 +125,23 @@ def f_estadisticas_ba(param_data, f_columnas_pips, f_pip_size2):
     df_1_tabla["Valor"]=[Ops_totales,Ganadoras,Ganadoras_c,Ganadoras_v,Perdedoras,Perdedoras_c,Perdedoras_v,Mediana_profit,Mediana_pip,r_efectividad,r_proporcion,r_efectividad_c,r_efectividad_v]
     df_1_tabla["Descripcion"]=["Operaciones totales","Operaciones ganadoras","Operaciones ganadoras compra","Operaciones ganadoras venta","Operaciones Perdedoras","Operaciones Perdedoras compra","Operaciones Perdedoras venta","Mediana de profit de operaciones","Mediana de pips de operaciones","Ganadoras Totales/Operaciones Totales","Ganadoras Totales/Perdedoras Totales","Ganadoras Compras/Operaciones Totales","Ganadoras Ventas/ Operaciones Totales"]
     
-    return df_1_tabla
+    sy = param_data.Símbolo.unique().tolist()
+    rank = [param_data[(param_data.Beneficio >0)&(param_data.Símbolo == i)].Posición.nunique() / param_data[param_data.Símbolo == i].Posición.nunique() for i in sy]
+
+    df_2_ranking = pd.DataFrame({"Símbolo": sy, "rank": rank})
+    
+    for i in range(len(df_2_ranking)):
+        df_2_ranking.iloc[i,1] = str(round(df_2_ranking.iloc[i,1]*100,2)) + "%"
+
+    
+    
+    return df_1_tabla, df_2_ranking
+
 
 # Función para caluclar estadísticas básicas y ranking por instrumentos (todos los datos)
-def f_estadisticas_ba2(tabla):
 
+def f_estadisticas_ba2(tabla):
+    tabla=pd.concat([data1,data2,data3]).reset_index()
     ops_totales=len(tabla)
     ops_ganadoras_totales=len(tabla[tabla["Beneficio"]>0])
     ops_ganadoras_compra=len(tabla[(tabla["Beneficio"]>0)&(tabla["Tipo"]=="buy")])
@@ -138,18 +150,30 @@ def f_estadisticas_ba2(tabla):
     ops_perdedoras_compra=len(tabla[(tabla["Beneficio"]<0)&(tabla["Tipo"]=="buy")])
     ops_perdedoras_venta=len(tabla[(tabla["Beneficio"]<0)&(tabla["Tipo"]=="sell")])
     mediana=tabla["Beneficio"].median()
+    Mediana_pip = statistics.median(f_columnas_pips(tabla,f_pip_size)['pips'])
     r_efectividad=ops_ganadoras_totales/ops_totales
-    r_proporcion=ops_perdedoras_totales/ops_totales
+    r_proporcion=ops_ganadoras_totales/ops_perdedoras_totales
     r_efectividad_c=ops_ganadoras_compra/ops_totales
     r_efectividad_v=ops_ganadoras_venta/ops_totales
     df_1_tabla=pd.DataFrame()
     df_1_tabla["Media"]=["Ops totales","Ganadoras","Ganadoras_c","Ganadoras_v","Perdedoras","Perdedoras_c","Perdedoras_v","Mediana (profit)","Mediana(pips)","r_efectividad","r_proporcion","r_efectividad_c","r_efectividad_v"]
-    df_1_tabla["Valor"]=[ops_totales,ops_ganadoras_totales,ops_ganadoras_compra,ops_ganadoras_venta,ops_perdedoras_totales,ops_perdedoras_compra,ops_perdedoras_venta,mediana,0,r_efectividad,r_proporcion,r_efectividad_c,r_efectividad_v]
+    df_1_tabla["Valor"]=[ops_totales,ops_ganadoras_totales,ops_ganadoras_compra,ops_ganadoras_venta,ops_perdedoras_totales,ops_perdedoras_compra,ops_perdedoras_venta,mediana,Mediana_pip,r_efectividad,r_proporcion,r_efectividad_c,r_efectividad_v]
     df_1_tabla["Descripcion"]=["Operaciones totales","Operaciones ganadoras","Operaciones ganadoras compra","Operaciones ganadoras venta","Operaciones Perdedoras","Operaciones Perdedoras compra","Operaciones Perdedoras venta","Mediana de profit de operaciones","Mediana de pips de operaciones","Ganadoras Totales/Operaciones Totales","Ganadoras Totales/Perdedoras Totales","Ganadoras Compras/Operaciones Totales","Ganadoras Ventas/ Operaciones Totales"]
     
-    return df_1_tabla
+    
+    sy = tabla.Símbolo.unique().tolist()
+    rank = [tabla[(tabla.Beneficio >0)&(tabla.Símbolo == i)].Posición.nunique() / tabla[tabla.Símbolo == i].Posición.nunique() for i in sy]
+
+    df_2_ranking = pd.DataFrame({"Símbolo": sy, "rank": rank})
+    
+    for i in range(len(df_2_ranking)):
+        df_2_ranking.iloc[i,1] = str(round(df_2_ranking.iloc[i,1]*100,2)) + "%"
+    
+    
+    return df_1_tabla, df_2_ranking
 
 # Función que agrega la evolución de capital diaria
+
 def f_evolucion_capital(param_data): 
     capital = pd.DataFrame()
 
@@ -173,4 +197,4 @@ def f_evolucion_capital(param_data):
     capital['profit_d'] = [param_data[fecha2 == j].Beneficio.sum() for j in fechas]
     capital["profit_acm_d"] = capital.profit_d.cumsum() + 100000
     
-    return capital
+    return capital, fecha_start, fecha_end
