@@ -104,7 +104,7 @@ def f_columnas_tiempos(param_data):
 
 # Función para caluclar estadísticas básicas y ranking por instrumentos (individual)
 
-def f_estadisticas_ba(param_data):
+def f_estadisticas_ba(param_data,f_columnas_pips, f_pip_size2):
     
     Ops_totales = param_data.Posición.nunique()
     Ganadoras = param_data[param_data.Beneficio > 0].Posición.nunique()
@@ -114,7 +114,7 @@ def f_estadisticas_ba(param_data):
     Perdedoras_c = param_data[(param_data.Beneficio <0) &(param_data.Tipo == "buy")].Posición.nunique()
     Perdedoras_v = param_data[(param_data.Beneficio <0) &(param_data.Tipo == "sell")].Posición.nunique()
     Mediana_profit = statistics.median(param_data['Beneficio'])
-    Mediana_pip = statistics.median(f_columnas_pips(param_data,f_pip_size)['pips'])
+    Mediana_pip = statistics.median(f_columnas_pips(param_data,f_pip_size2)['pips'])
     r_efectividad = Ganadoras/Ops_totales
     r_proporcion = Ganadoras/Perdedoras
     r_efectividad_c = Ganadoras_c/Ops_totales
@@ -140,8 +140,8 @@ def f_estadisticas_ba(param_data):
 
 # Función para caluclar estadísticas básicas y ranking por instrumentos (todos los datos)
 
-def f_estadisticas_ba2(tabla):
-    tabla=pd.concat([data1,data2,data3]).reset_index()
+def f_estadisticas_ba2(tabla,f_columnas_pips, f_pip_size2):
+    #tabla=pd.concat([data1,data2,data3]).reset_index()
     ops_totales=len(tabla)
     ops_ganadoras_totales=len(tabla[tabla["Beneficio"]>0])
     ops_ganadoras_compra=len(tabla[(tabla["Beneficio"]>0)&(tabla["Tipo"]=="buy")])
@@ -150,7 +150,7 @@ def f_estadisticas_ba2(tabla):
     ops_perdedoras_compra=len(tabla[(tabla["Beneficio"]<0)&(tabla["Tipo"]=="buy")])
     ops_perdedoras_venta=len(tabla[(tabla["Beneficio"]<0)&(tabla["Tipo"]=="sell")])
     mediana=tabla["Beneficio"].median()
-    Mediana_pip = statistics.median(f_columnas_pips(tabla,f_pip_size)['pips'])
+    Mediana_pip = statistics.median(f_columnas_pips(tabla,f_pip_size2)['pips'])
     r_efectividad=ops_ganadoras_totales/ops_totales
     r_proporcion=ops_ganadoras_totales/ops_perdedoras_totales
     r_efectividad_c=ops_ganadoras_compra/ops_totales

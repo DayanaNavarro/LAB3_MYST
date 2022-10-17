@@ -37,8 +37,10 @@ df_1_tabla_data2 = fn.f_estadisticas_ba(data2, fn.f_columnas_pips, fn.f_pip_size
 df_1_tabla_data3 = fn.f_estadisticas_ba(data3, fn.f_columnas_pips, fn.f_pip_size2)
 
 # Estadísticas de transacciones por equipo
-df_1_tabla = fn.f_estadisticas_ba2(data_total)
+df_1_tabla = fn.f_estadisticas_ba2(tabla,fn.f_columnas_pips, fn.f_pip_size2)
 
 
 # Evolución de capital
-fn.f_evolucion_capital(data2)
+evo_capital_data1=fn.f_evolucion_capital(data1)
+evo_capital_data2=fn.f_evolucion_capital(data2)
+evo_capital_data2=fn.f_evolucion_capital(data3)
