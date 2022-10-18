@@ -2,6 +2,7 @@
 
 import functions as fn
 import pandas as pd
+import yfinance as yf
 
 ### --- 
 #import MetaTrader5 as MT5
@@ -44,3 +45,20 @@ df_1_tabla = fn.f_estadisticas_ba2(tabla,fn.f_columnas_pips, fn.f_pip_size2)
 evo_capital_data1=fn.f_evolucion_capital(data1)
 evo_capital_data2=fn.f_evolucion_capital(data2)
 evo_capital_data2=fn.f_evolucion_capital(data3)
+
+#Descargar precios de los csv
+
+Precios1= yf.download('^GSPC', start=fn.fechas1()[0], end=fn.fechas1()[1])
+Prices1 = Precios1['Adj Close']
+
+Precios2= yf.download('^GSPC', start=fn.fechas2()[0], end=fn.fechas2()[1])
+Prices2 = Precios2['Adj Close']
+
+Precios3= yf.download('^GSPC', start=fn.fechas3()[0], end=fn.fechas3()[1])
+Prices3 = Precios3['Adj Close']
+
+#Metricas de Atribución al desempeño
+
+Me_atri_desem1= fn.f_estadisticas_mad(data1,Prices)
+Me_atri_desem2= fn.f_estadisticas_mad(data2,Prices)
+Me_atri_desem3= fn.f_estadisticas_mad(data3,Prices)

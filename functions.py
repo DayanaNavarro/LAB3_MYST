@@ -4,6 +4,10 @@ import pandas as pd
 from datetime import datetime
 import statistics
 from datetime import date, timedelta
+import plotly.graph_objects as go
+import plotly.express as px
+import yfinance as yf
+
 
 # Función para leer archivos 
 def f_leer_archivo(param_archivo: str):
@@ -198,3 +202,112 @@ def f_evolucion_capital(param_data):
     capital["profit_acm_d"] = capital.profit_d.cumsum() + 100000
     
     return capital, fecha_start, fecha_end
+
+
+#Función que tiene las fechas para descargar los precos de SP500
+
+#Fechas Data1
+def fechas1():
+    data1_start='2022-09-19'
+    data1_end='2022-09-26'
+    return data1_start,data1_end
+
+#Fechas Data2
+def fechas2():
+    data2_start='2022-09-19'
+    data2_end='2022-09-22'
+    return data2_start,data2_end
+
+#Fechas Data3
+def fechas3():
+    data3_start='2022-09-21'
+    data3_end='2022-09-26'
+    return data3_start,data3_end
+
+#Función fechas para DrawDown y DrawUp
+
+def fechas_down_up(): 
+    
+    #Fechas Data1
+    fecha_inicial_1_down= '2022-09-25'
+    fecha_final_1_down='2022-09-26'
+
+    fecha_inicial_1_up= '2022-09-22'
+    fecha_final_1_up='2022-09-23'
+    
+    
+    #Fechas Data2
+
+    fecha_inicial_2_down= '2022-09-21'
+    fecha_final_2_down='2022-09-22'
+
+    fecha_inicial_2_up= '2022-09-18'
+    fecha_final_2_up='2022-09-19'
+    
+    
+    #Fechas Data3
+
+
+    fecha_inicial_3_down= '2022-09-22'
+    fecha_final_3_down='2022-09-25'
+
+    fecha_inicial_3_up= '2022-09-25'
+    fecha_final_3_up='2022-09-26'
+    
+    return fecha_inicial_1_down,fecha_final_1_down, fecha_inicial_1_up,fecha_final_1_up,fecha_inicial_2_down,fecha_final_2_down,fecha_inicial_2_up, fecha_final_2_up,fecha_inicial_3_down,fecha_final_3_down,fecha_inicial_3_up,fecha_final_3_up
+
+# Función con el DataFrame con las Métricas de Atribución al Desempeño
+
+def f_estadisticas_mad(param_data,Prices):
+    
+    mad=pd.DataFrame()
+
+    r=0.05
+
+    # Sharpe Ratio Original
+    rp=f_evolucion_capital(param_data)[0]["profit_acm_d"].pct_change()
+    rp1=rp[1:].mean()
+    sdp=rp[1:].std()
+
+    sharpe_original = (rp1 - r)/sdp
+
+    # Sharpe Ratio Actualizado
+
+    r_trader=rp[1:].mean()
+    r_b=Prices.pct_change()
+    r_benchmark=r_b[1:].mean()
+
+    sharpe_actualizado = (r_trader-r_benchmark)/sdp
+
+    # DrawDown (Capital)
+    
+    Fecha_inicial_down=fechas_down_up()[0]
+    
+    Fecha_final_down=fechas_down_up()[1]
+    
+    drawdown= (f_evolucion_capital(param_data)[0].loc[:,"profit_acm_d"]).min()
+
+    # DrawUp (Capital)
+    
+    Fecha_inicial_up=fechas_down_up()[2]
+    
+    Fecha_final_up=fechas_down_up()[3]
+
+    drawup= (f_evolucion_capital(param_data)[0].loc[:,"profit_acm_d"]).max()
+
+
+    mad["metrica"]=['sharpe_original','sharpe_actualizado','drawdown_capi[Fecha Incial]', 'drawdown_capi[Fecha final]', 'drawdown_capi[$ capital]', 'drawup_capi[Fecha Inicial]', 'drawup_capi[Fecha Final]', 'drawup_capi[$ capital]']
+
+    mad["Valor"]=[sharpe_original,sharpe_actualizado,Fecha_inicial_down,Fecha_final_down,drawdown,Fecha_inicial_up,Fecha_final_up,drawup]
+
+    mad["Descripcion"]=["Sharpe Ratio Fórmula Original","Sharpe Ratio Fórmula Ajustada","Fecha inicial del DrawDown de Capital", "Fecha final del DrawDown de Capital", "Máxima pérdida flotante registrada", "Fecha inicial del DrawUp de Capital", "Fecha final del DrawUp de Capital", "Máxima ganancia flotante registrada"]
+    
+    return mad
+
+
+
+
+
+
+
+
