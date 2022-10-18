@@ -247,7 +247,6 @@ def fechas_down_up():
     
     #Fechas Data3
 
-
     fecha_inicial_3_down= '2022-09-22'
     fecha_final_3_down='2022-09-25'
 
