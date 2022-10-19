@@ -4,9 +4,6 @@ import pandas as pd
 from datetime import datetime
 import statistics
 from datetime import date, timedelta
-import plotly.graph_objects as go
-import plotly.express as px
-import yfinance as yf
 
 
 # Función para leer archivos 
@@ -204,26 +201,6 @@ def f_evolucion_capital(param_data):
     return capital, fecha_start, fecha_end
 
 
-#Función que tiene las fechas para descargar los precos de SP500
-
-#Fechas Data1
-def fechas1():
-    data1_start='2022-09-19'
-    data1_end='2022-09-26'
-    return data1_start,data1_end
-
-#Fechas Data2
-def fechas2():
-    data2_start='2022-09-19'
-    data2_end='2022-09-22'
-    return data2_start,data2_end
-
-#Fechas Data3
-def fechas3():
-    data3_start='2022-09-21'
-    data3_end='2022-09-26'
-    return data3_start,data3_end
-
 #Función fechas para DrawDown y DrawUp
 
 def fechas_down_up(): 
@@ -280,17 +257,17 @@ def f_estadisticas_mad(param_data,Prices):
 
     # DrawDown (Capital)
     
-    Fecha_inicial_down=fechas_down_up()[0]
+    Fecha_inicial_down=fechas_down_up()[8]
     
-    Fecha_final_down=fechas_down_up()[1]
+    Fecha_final_down=fechas_down_up()[9]
     
     drawdown= (f_evolucion_capital(param_data)[0].loc[:,"profit_acm_d"]).min()
 
     # DrawUp (Capital)
     
-    Fecha_inicial_up=fechas_down_up()[2]
+    Fecha_inicial_up=fechas_down_up()[10]
     
-    Fecha_final_up=fechas_down_up()[3]
+    Fecha_final_up=fechas_down_up()[11]
 
     drawup= (f_evolucion_capital(param_data)[0].loc[:,"profit_acm_d"]).max()
 
