@@ -56,4 +56,71 @@ def grafica4_rank(df_1_tabla):
     fig.show()
     return
 
+def grafica1_down_up(evo_capital_data1):
+
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(x=evo_capital_data1[0].timestamp, y=evo_capital_data1[0].profit_acm_d, mode='lines',name='Beneficio acumulado',line=dict(color='black')))
+
+    fig.add_shape(type="line",
+    x0='2022-09-25', y0=evo_capital_data1[0].profit_acm_d.iloc[-1], x1='2022-09-26', y1=evo_capital_data1[0].profit_acm_d.iloc[-1],
+    line=dict(color="Red",width=3,dash='dot'))
+
+    fig.add_shape(type="line",
+    x0='2022-09-22', y0=evo_capital_data1[0].profit_acm_d.iloc[-1], x1='2022-09-23', y1=evo_capital_data1[0].profit_acm_d.iloc[-1],
+    line=dict(color="Green",width=3,dash='dot')) 
+
+
+    fig.update_layout(title="Gráfica 1: DrawDown y DrawUp")
+    fig.show()
+    
+    return
+
+def grafica2_down_up(evo_capital_data2):
+
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(x=evo_capital_data2[0].timestamp, y=evo_capital_data2[0].profit_acm_d, mode='lines',name='Beneficio acumulado',line=dict(color='black')))
+
+    fig.add_shape(type="line",
+    x0='2022-09-21', y0=evo_capital_data2[0].profit_acm_d.iloc[-1], x1='2022-09-22', y1=evo_capital_data2[0].profit_acm_d.iloc[-1],
+    line=dict(color="Red",width=3,dash='dot'))
+
+    fig.add_shape(type="line",
+    x0='2022-09-18', y0=evo_capital_data2[0].profit_acm_d.iloc[-1], x1='2022-09-19', y1=evo_capital_data2[0].profit_acm_d.iloc[-1],
+    line=dict(color="Green",width=3,dash='dot')) 
+
+
+    fig.update_layout(title="Gráfica 2: DrawDown y DrawUp")
+    fig.show()
+    
+    return
+
+
+def grafica3_down_up(evo_capital_data3):
+
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(x=evo_capital_data3[0].timestamp, y=evo_capital_data3[0].profit_acm_d, mode='lines',name='Beneficio acumulado',line=dict(color='black')))
+
+    fig.add_shape(type="line",
+    x0='2022-09-22', y0=evo_capital_data3[0].profit_acm_d.iloc[-1], x1='2022-09-25', y1=evo_capital_data3[0].profit_acm_d.iloc[-1],
+    line=dict(color="Red",width=3,dash='dot'))
+
+    fig.add_shape(type="line",
+    x0='2022-09-25', y0=evo_capital_data3[0].profit_acm_d.iloc[-1], x1='2022-09-26', y1=evo_capital_data3[0].profit_acm_d.iloc[-1],
+    line=dict(color="Green",width=3,dash='dot')) 
+
+
+    fig.update_layout(title="Gráfica 3: DrawDown y DrawUp")
+    fig.show()
+    
+    return
+
+
+
+
 
