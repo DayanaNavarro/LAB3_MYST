@@ -4,8 +4,8 @@ import pandas as pd
 from datetime import datetime
 import statistics
 from datetime import date, timedelta
-import MetaTrader5 as mt5
-import pytz
+#import MetaTrader5 as mt5
+#import pytz
 
 # Función para leer archivos 
 def f_leer_archivo(param_archivo: str):
