@@ -1,14 +1,7 @@
 # Cargado y limpieza de datos
-
+import sys
 import functions as fn
 import pandas as pd
-
-
-### --- 
-#import MetaTrader5 as MT5
-#MT5.initialize()
-# MT5.copy_rate_range() <- (EURUSD,frec(5m,15m,...),dates)
-### ---
 
 # Cargado de datos
 data1 = fn.f_leer_archivo("Data1")
